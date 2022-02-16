@@ -114,7 +114,7 @@ export default {
     },
 
     mounted() {
-        // this.loadData()
+        this.loadData()
     },
 
     methods: {
@@ -130,13 +130,13 @@ export default {
         },
 
         submit() {
-            // SaveVehicle(this.form).then((res) => {
-            //     if (res.status) this.$message.success("添加成功")
-            //     this.visible = false
-            //     this.loadData()
-            // })
-            this.data.push(JSON.parse(JSON.stringify(this.form)))
-            this.visible = false
+            SaveVehicle(this.form).then((res) => {
+                if (res.status) this.$message.success("添加成功")
+                this.visible = false
+                this.loadData()
+            })
+            // this.data.push(JSON.parse(JSON.stringify(this.form)))
+            // this.visible = false
         }
 
     },

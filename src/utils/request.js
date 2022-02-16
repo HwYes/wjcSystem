@@ -24,7 +24,7 @@ service.interceptors.response.use(
 
     (error) => {
         message.error(error)
-        // router.push('/500')
+        router.push('/500')
         return Promise.reject(error)
     }
 )
