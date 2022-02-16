@@ -1,53 +1,42 @@
 <template>
     <div>
-        <a-spin
+        <a-button
             size="large"
-            :spinning="spinning"
+            class="editable-add-btn"
+            @click="visible = true"
         >
-            <a-row :gutter="20">
-                <a-col
-                    :span="8"
-                    class="item"
-                >
-                    <a-card
-                        hoverable
-                        class="add-item"
-                        @click="visible = true"
-                    >
-                        <a-icon type="plus" />
-                        添加仓库
-                    </a-card>
-                </a-col>
-                <a-col
-                    :span="8"
-                    v-for="(item, index) in this.data"
-                    :key="index"
-                    class="item"
-                >
-                    <a-card hoverable>
-                        <div class="card-tools">
-                            <div class="tool">负责人: {{ item.principle }}</div>
-                            <div class="tool">
-                                <router-link :to="'/warehouse/' + item.id">
-                                    <a-icon type="bar-chart" /> 库存管理
-                                </router-link>
-                            </div>
-                        </div>
-                        <a-card-meta
-                            :title="item.name"
-                            :description="'ID: ' + item.id"
-                        >
-                            <img
-                                class="image"
-                                slot="avatar"
-                                :src="imgList[Math.floor(Math.random() * 3)]"
-                                alt=""
-                            />
-                        </a-card-meta>
-                    </a-card>
-                </a-col>
-            </a-row>
-        </a-spin>
+            <a-icon type="plus" />
+            新增员工
+        </a-button>
+        <a-table
+            :loading="loading"
+            :columns="columns"
+            :data-source="data"
+            bordered
+            rowKey="id"
+        >
+            <template
+                v-for="col in ['name', 'principle','id']"
+                :slot="col"
+                slot-scope="text, record, index"
+            >
+                <div :key="col">
+
+                    <template>
+
+                        {{ text }}
+                    </template>
+                </div>
+            </template>
+            <template
+                slot="operation"
+                slot-scope="text, record, index"
+            >
+                <router-link :to="'/warehouse/' + index">
+                    <a-icon type="bar-chart" /> 库存管理
+                </router-link>
+            </template>
+        </a-table>
 
         <a-modal
             title="新增仓库"
@@ -76,6 +65,31 @@ export default {
     name: "WareHouse",
     data() {
         return {
+            columns: [
+                {
+                    title: '仓库Id',
+                    dataIndex: 'id',
+                    scopedSlots: { customRender: 'id' },
+                },
+                {
+                    title: '仓库名称',
+                    dataIndex: 'name',
+                    scopedSlots: { customRender: 'name' },
+                },
+                {
+                    title: '负责人',
+                    dataIndex: 'principle',
+                    scopedSlots: { customRender: 'principle' },
+                },
+
+
+                {
+                    title: '操作',
+                    dataIndex: 'operation',
+                    scopedSlots: { customRender: 'operation' },
+                },
+            ],
+            loading: false,
             visible: false,
             form: { id: '', principle: '', name: '' },
             spinning: false,
@@ -106,11 +120,13 @@ export default {
         },
 
         submit() {
-            SaveWarehouse(this.form).then((res) => {
-                if (res.status) this.$message.success("添加成功")
-                this.visible = false
-                this.loadData()
-            })
+            // SaveWarehouse(this.form).then((res) => {
+            //     if (res.status) this.$message.success("添加成功")
+            //     this.visible = false
+            //     this.loadData()
+            // })
+            this.data.push(JSON.parse(JSON.stringify(this.form)))
+            this.visible = false
         }
 
     },
@@ -119,6 +135,9 @@ export default {
 </script>
 
 <style scoped>
+.editable-add-btn {
+    margin-bottom: 15px;
+}
 .add-item {
     text-align: center;
     line-height: 120px;
